@@ -5,12 +5,6 @@ const  CATEGORY_API = {
         url: '/product/category'
     },
 
-    // 新增商品
-    addProduct:{
-        method: 'post',
-        url: '/product/add'
-    },
-
     // 更新商品
     saveProduct:{
         method: 'post',
@@ -21,6 +15,12 @@ const  CATEGORY_API = {
     deleteProduct:{
         method: 'post',
         url: '/product/delete'
+    },
+
+    // 删除图片
+    delTemp: {
+        method: 'post',
+        url: '/product/del'
     },
 }
 export default CATEGORY_API

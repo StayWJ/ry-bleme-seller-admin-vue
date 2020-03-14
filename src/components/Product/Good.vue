@@ -8,12 +8,15 @@
             <el-form-item label="商品图片">
               <el-upload
                 class="avatar-uploader"
-                action="/upyun"
+                action="/api/product/image"
+                v-loading="loading"
+                :data="data"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
+                :on-error="handleAvatarError"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="product.icon" :src="product.icon" class="avatar" />
+                <img v-if="image" :src="image" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -110,25 +113,63 @@ export default {
   data() {
     return {
       sellerId: 1,
-      productStatus: true
+      productStatus: true,
+      data: {
+        newPath: ""
+      },
+      image: this.product.icon,
+      loading: false
     };
   },
   methods: {
     // 关闭对话框
-    close() {
+    async close() {
+      if (this.data.newPath) {
+        await this.$Http.delTemp(
+          {
+            newPath: this.data.newPath
+          },
+          true
+        );
+        this.data.newPath = "";
+      }
+      this.image = "";
       this.$parent.getProductList();
       this.$parent.dialogFormVisible = false;
     },
     // 确定
-    save() {
-      this.close();
+    async save() {
+      let product = JSON.parse(JSON.stringify(this.product));
+      product.newPath = this.data.newPath;
+      let res = await this.$Http.saveProduct(product);
+      // 响应
+      if (res.code == 0) {
+        this.$message.success({
+          message: "更新成功"
+        });
+        this.data.newPath = "";
+        this.close();
+      }
     },
     // 上传完成
     handleAvatarSuccess(res, file) {
-      this.product.icon = URL.createObjectURL(file.raw);
+      this.image = URL.createObjectURL(file.raw);
+      this.data.newPath = res.data;
+      this.loading = false;
+      this.$message.success({
+        message: "上传成功"
+      });
+    },
+    // 上传失败
+    handleAvatarError(res) {
+      this.loading = false;
+      this.$message.error({
+        message: res.message
+      });
     },
     // 上传检测
     beforeAvatarUpload(file) {
+      this.loading = true;
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -138,12 +179,19 @@ export default {
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
+      if (!isJPG || !isLt2M) {
+        this.loading = false;
+      }
       return isJPG && isLt2M;
     }
   },
   created() {},
-  computed: {},
   watch: {
+    dialogFormVisible: function() {
+      if (this.dialogFormVisible) {
+        this.image = this.product.icon;
+      }
+    },
     "product.discount": function() {
       if (this.product.discount) {
         this.product.oldPrice = this.product.price;
@@ -185,6 +233,8 @@ export default {
 #good >>> .avatar {
   width: 178px;
   height: 178px;
-  display: block;
+  display: flex;
+  background-color: #ffffff;
+  object-fit: contain;
 }
 </style>

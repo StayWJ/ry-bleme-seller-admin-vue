@@ -36,15 +36,6 @@ module.exports = {
             pathRewrite: {
               '^/api': ''
             },
-            '/upyun': { //又拍云
-              target: 'http://v0.api.upyun.com/ry-bleme',
-              // 如果要代理 websockets
-              // ws: true,
-              changeOrigin: true,
-              pathRewrite: {
-                '^/upyun': ''
-              }
-            }
         },
     }
   },

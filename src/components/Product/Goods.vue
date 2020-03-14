@@ -5,7 +5,8 @@
         <el-table :data="productData" style="width: 100%">
           <el-table-column prop="icon" label="商品图片" width="80">
             <template slot-scope="scope">
-              <el-avatar shape="square" fit="contain" :src="scope.row.icon"></el-avatar>
+              <!-- <el-avatar shape="square" fit="contain" :src="scope.row.icon"></el-avatar> -->
+              <img :src="scope.row.icon" class="product_icon" />
             </template>
           </el-table-column>
           <el-table-column prop="name" label="商品名称" width="120"></el-table-column>
@@ -26,18 +27,13 @@
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" size="small">编辑</el-button>
               <el-button
-                @click="ChangeStatus(scope.row, 'down')"
-                v-if="scope.row.status"
+                @click="ChangeStatus(scope.row, 'up')"
+                v-if="scope.row.status == 1"
                 type="primary"
                 plain
                 size="small"
-              >下架</el-button>
-              <el-button
-                @click="ChangeStatus(scope.row, 'up')"
-                v-else
-                type="primary"
-                size="small"
               >上架</el-button>
+              <el-button @click="ChangeStatus(scope.row, 'down')" v-else size="small">下架</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -58,24 +54,10 @@ export default {
   },
   data() {
     return {
-      sellerId: 1,
+      sellerId: "1",
       productData: [],
-      dialogFormVisible: true,
-      product: {
-        id: "126",
-        name: "葱花饼",
-        price: 10,
-        oldPrice: 8.0,
-        stock: 92,
-        description: "很好吃的饼",
-        icon:
-          "https://bkimg.cdn.bcebos.com/pic/a2cc7cd98d1001e9abacc65aba0e7bec55e797d7?x-bce-process=image/watermark,g_7,image_d2F0ZXIvYmFpa2UxNTA=,xp_5,yp_5",
-        status: 0,
-        categoryType: "",
-        recommend: true,
-        required: false,
-        discount: true
-      }
+      dialogFormVisible: false,
+      product: {}
     };
   },
   methods: {
@@ -106,12 +88,14 @@ export default {
         oldPrice: 0,
         stock: 0,
         description: "",
+        sellerId: this.sellerId,
         icon: "",
         status: 0,
         categoryType: "",
         recommend: false,
         required: false,
-        discount: false
+        discount: false,
+        newPath: ""
       });
     },
 
@@ -121,8 +105,20 @@ export default {
     },
 
     // 上下架
-    ChangeStatus(row, type) {
-      console.log(row, type);
+    async ChangeStatus(row, type) {
+      if (type == "up") {
+        row.status = 0;
+      } else {
+        row.status = 1;
+      }
+      let res = await this.$Http.saveProduct(row);
+      // 响应
+      if (res.code == 0) {
+        this.$message.success({
+          message: "更新成功"
+        });
+        this.close();
+      }
     }
   },
   created() {
@@ -131,7 +127,6 @@ export default {
   watch: {
     categoryType: function() {
       this.getProductList();
-      this.setCategoryName();
     }
   },
   computed: {}
@@ -154,5 +149,12 @@ export default {
   right: 4%;
   transform: translateY(60px);
   z-index: 99;
+}
+
+.product_icon {
+  object-fit: contain;
+  width: 45px;
+  height: 45px;
+  border-radius: 3px;
 }
 </style>
