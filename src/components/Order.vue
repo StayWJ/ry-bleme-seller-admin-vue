@@ -132,7 +132,7 @@
                 size="mini"
                 v-if="scope.row.orderStatus == 0 && scope.row.payStatus == 1"
                 type="danger"
-                @click="handleCancel(scope.$index, scope.row)"
+                @click="cancelConfirm(scope.$index, scope.row)"
               >取消</el-button>
             </template>
           </el-table-column>
@@ -176,7 +176,8 @@ export default {
         DELIVER: { code: 2, message: "开始派送" },
         FINISHED: { code: 3, message: "已完成" },
         CANCEL: { code: 4, message: "已取消" }
-      }
+      },
+      audio: false
     };
   },
   methods: {
@@ -204,7 +205,7 @@ export default {
       // 响应
       if (res.code == 0) {
         row.orderStatus = this.orderStatus.DELIVER.code;
-        this.$message.success({ message:this.orderStatus.DELIVER.message});
+        this.$message.success({ message: this.orderStatus.DELIVER.message });
       }
     },
 
@@ -218,11 +219,24 @@ export default {
       // 响应
       if (res.code == 0) {
         row.orderStatus = this.orderStatus.FINISHED.code;
-        this.$message.success({ message:this.orderStatus.FINISHED.message});
+        this.$message.success({ message: this.orderStatus.FINISHED.message });
       }
     },
 
-    // 取消
+    // 取消提示
+    cancelConfirm(index, row) {
+      this.$confirm("是否取消订单?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.handleCancel(index, row);
+        })
+        .catch(() => {});
+    },
+
+    // 取消执行
     async handleCancel(index, row) {
       // 请求
       let res = await this.$Http.cancel({
@@ -232,7 +246,7 @@ export default {
       // 响应
       if (res.code == 0) {
         row.orderStatus = this.orderStatus.CANCEL.code;
-        this.$message.success({ message:this.orderStatus.CANCEL.message});
+        this.$message.success({ message: this.orderStatus.CANCEL.message });
         if (row.payStatus == 1) {
           setTimeout(function() {
             row.payStatus = 2;
@@ -265,11 +279,14 @@ export default {
         this.total = res.data.total;
         this.orderData = res.data.list;
       }
-    }
+    },
   },
   created() {
     this.condition.date = util.getToday();
-    this.getOrderList(1);
+    this.getOrderList(this.sellerId);
+    this.$root.$on("getNewOrder", () => {
+      this.getOrderList(this.sellerId);
+    });
   },
   computed: {
     getOrderStatus() {
