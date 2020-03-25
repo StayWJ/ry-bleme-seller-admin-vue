@@ -48,7 +48,6 @@ export default {
   name: "Product",
   data() {
     return {
-      sellerId: 1,
       categoryList: []
     };
   },
@@ -82,7 +81,10 @@ export default {
       return Object.fromEntries(
         this.getCustomList.map(item => [item.categoryType, item.categoryName])
       );
-    }
+    },
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    },
   }
 };
 </script>

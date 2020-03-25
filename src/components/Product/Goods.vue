@@ -54,7 +54,6 @@ export default {
   },
   data() {
     return {
-      sellerId: "1",
       productData: [],
       dialogFormVisible: false,
       product: {}
@@ -129,7 +128,11 @@ export default {
       this.getProductList();
     }
   },
-  computed: {}
+  computed: {
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    }
+  }
 };
 </script>
 

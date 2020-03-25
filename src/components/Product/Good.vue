@@ -112,7 +112,6 @@ export default {
   name: "Good",
   data() {
     return {
-      sellerId: 1,
       productStatus: true,
       data: {
         newPath: ""
@@ -186,6 +185,11 @@ export default {
     }
   },
   created() {},
+  computed: {
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    },
+  },
   watch: {
     dialogFormVisible: function() {
       if (this.dialogFormVisible) {

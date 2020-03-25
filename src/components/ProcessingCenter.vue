@@ -12,6 +12,11 @@ export default {
     };
   },
   methods: {
+  },
+  computed: {
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    },
   }
 };
 </script>

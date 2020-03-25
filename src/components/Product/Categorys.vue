@@ -114,7 +114,6 @@ export default {
     };
     return {
       centerDialogVisible: false,
-      sellerId: 1,
       categoryList: [],
       editIndex: -1,
       category: {},
@@ -228,7 +227,10 @@ export default {
           return "折扣";
         }
       };
-    }
+    },
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    },
   }
 };
 </script>

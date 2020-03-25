@@ -20,45 +20,51 @@ export default {
   },
   methods: {
     initWebSocket: function() {
-      // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
-      this.websock = new WebSocket("wss://www.warmcongee.top/websocket/1");
+      this.websock = new WebSocket(
+        "wss://www.warmcongee.top/websocket/" +
+          this.$store.state.seller.sellerId
+      );
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onclose = this.websocketclose;
     },
     websocketonopen: function() {
-      // console.log("WebSocket连接成功");
+      console.log("WebSocket连接成功");
     },
     websocketonerror: function(e) {
-      // console.log("WebSocket连接发生错误");
+      console.log("WebSocket连接发生错误");
     },
     websocketonmessage: function(e) {
-      this.$notify.success({
-        title: "提示",
-        message: "您有新的订单，请及时处理！",
-        duration: 0
-      });
-      let audio = new Audio();
-      audio.src = "https://image.warmcongee.top/sell/seller/tts/new_order_tts.mp3";
-      audio.play();
       this.$root.$emit("getNewOrder");
       // console.log(e.data);
     },
     websocketclose: function(e) {
-      console.log(e);
+      // console.log(e);
     }
   },
   created() {
-    this.initWebSocket();
+    if (this.isLogin) {
+      this.initWebSocket();
+    } else {
+      this.$router.push({ name: "Login" });
+    }
   },
   destroyed() {
-    this.websocketclose();
+    if (this.isLogin) {
+      this.websocketclose();
+    }
   },
   computed: {
     // 适配子路由索引
     getActiveIndex() {
-      return this.$route.matched[1].path;
+      return this.isLogin? this.$route.matched[1].path : '';
+    },
+    isLogin() {
+      return this.$store.state.seller.sellerId == null ? false : true;
+    },
+    sellerId() {
+      return this.$store.state.seller.sellerId;
     }
   }
 };

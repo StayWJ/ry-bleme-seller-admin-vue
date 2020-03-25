@@ -1,4 +1,4 @@
-const  CATEGORY_API = {
+const  PRODUCT_API = {
     // 获取对应类目的商品列表
     getCategoryProductList:{
         method: 'get',
@@ -23,4 +23,4 @@ const  CATEGORY_API = {
         url: '/product/del'
     },
 }
-export default CATEGORY_API
+export default PRODUCT_API

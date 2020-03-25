@@ -2,6 +2,7 @@ import axios from 'axios';
 import orderApi from './orderApi';
 import categoryApi from './categoryApi';
 import productApi from './productApi';
+import loginApi from './loginApi';
 import { Loading } from 'element-ui';
 import { Message } from 'element-ui';
 
@@ -15,6 +16,7 @@ let array = new Array();
 array.push(orderApi);
 array.push(categoryApi);
 array.push(productApi);
+array.push(loginApi);
 
 array.forEach(element => {
     for (let key in element) {

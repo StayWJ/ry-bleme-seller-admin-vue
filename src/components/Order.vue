@@ -165,7 +165,6 @@ export default {
   },
   data() {
     return {
-      sellerId: 1,
       condition: {},
       loading: false,
       total: 0,
@@ -280,11 +279,25 @@ export default {
         this.orderData = res.data.list;
       }
     },
+
+    // 新订单通知
+    notifyNew() {
+      this.$notify.success({
+        title: "提示",
+        message: "您有新的订单，请及时处理！",
+        duration: 0
+      });
+      let audio = new Audio();
+      audio.src =
+        "https://image.warmcongee.top/sell/seller/tts/new_order_tts.mp3";
+      audio.play();
+    }
   },
   created() {
     this.condition.date = util.getToday();
-    this.getOrderList(this.sellerId);
+    this.getOrderList(1);
     this.$root.$on("getNewOrder", () => {
+      this.notifyNew();
       this.getOrderList(this.sellerId);
     });
   },
@@ -317,7 +330,10 @@ export default {
           return "订单状态错误";
         }
       };
-    }
+    },
+    sellerId() {
+      return this.$store.state.seller.sellerId;
+    },
   }
 };
 </script>

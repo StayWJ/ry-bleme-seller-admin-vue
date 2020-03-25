@@ -47,6 +47,10 @@ export default new Router({
                 },
             ]
         }, {
+            path: '/login',
+            name: 'Login',
+            component: () => import("@/components/Login.vue")
+        }, {
             path: '/404',
             name: 'NonFound',
             component: () => import("@/components/NonFound.vue")

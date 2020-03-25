@@ -26,7 +26,7 @@ module.exports = {
     port: 8085, //端口
     https: false, //false关闭https，true为开启
     open: false, //自动打开浏览器
-    // disableHostCheck: true,
+    disableHostCheck: true,
     proxy: {
         '/api': { //本地 
             target: 'https://127.0.0.1:443/sell/seller',
