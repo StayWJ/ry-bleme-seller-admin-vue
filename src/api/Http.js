@@ -3,6 +3,7 @@ import orderApi from './orderApi';
 import categoryApi from './categoryApi';
 import productApi from './productApi';
 import loginApi from './loginApi';
+import sellerInfoApi from './sellerInfoApi';
 import { Loading } from 'element-ui';
 import { Message } from 'element-ui';
 
@@ -17,6 +18,7 @@ array.push(orderApi);
 array.push(categoryApi);
 array.push(productApi);
 array.push(loginApi);
+array.push(sellerInfoApi);
 
 array.forEach(element => {
     for (let key in element) {

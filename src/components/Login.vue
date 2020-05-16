@@ -38,8 +38,7 @@
               <el-button
                 type="primary"
                 :loading="loginLoading"
-                @click="onSubmit('code')"
-                native-type="submit"
+                @click="onSubmit('code', 'code')"
               >登录/注册</el-button>
             </el-form-item>
             <span class="tip">未注册手机验证后自动登录</span>
@@ -58,7 +57,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item style="text-align: center">
-              <el-button type="primary" @click="onSubmit('pwd')">登录</el-button>
+              <el-button type="primary" @click="onSubmit('pwd', 'pwd')">登录</el-button>
               <el-button @click="activeIndex = 'code'">注册</el-button>
             </el-form-item>
           </el-form>
@@ -109,29 +108,37 @@ export default {
   },
   methods: {
     // 登录
-    async onSubmit(type) {
-      let data;
-      if (type == "code") {
-        data = this.code;
-      } else {
-        data = this.password;
-        data.phone = this.password.username;
-      }
-      let res = await this.$Http.login(data);
-      // 响应
-      if (res.code == 0) {
-        this.$message.success({
-          message: "登录成功"
-        });
-        this.$store.commit("setSellerId", res.data);
-        if (this.isLogin) {
-          this.$router.push({ name: "Home" });
+    async onSubmit(type, formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          let data;
+          if (type == "code") {
+            data = this.code;
+          } else {
+            data = this.password;
+            data.phone = this.password.username;
+          }
+          let res = await this.$Http.login(data);
+          // 响应
+          if (res.code == 0) {
+            this.$message.success({
+              message: "登录成功"
+            });
+            this.$store.commit("setSellerId", res.data.sellerId);
+            this.$store.commit("setSellerName", res.data.sellerName);
+            if (this.isLogin) {
+              this.$router.push({ name: "Home" });
+            }
+          } else {
+            this.$message.error({
+              message: res.msg
+            });
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
         }
-      } else {
-        this.$message.error({
-          message: res.msg
-        });
-      }
+      });
     },
     // 发送验证码
     async sendCode() {

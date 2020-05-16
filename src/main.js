@@ -13,12 +13,16 @@ const store = new Vuex.Store({
   state: {
     seller: {
       sellerId: null,
+      sellerName: "",
     },
   },
   mutations: {
     setSellerId(state, id) {
       state.seller.sellerId = id
-    }
+    },
+    setSellerName(state, name) {
+      state.seller.sellerName = name
+    },
   },
   plugins: [
     createVuexAlong({

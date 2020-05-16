@@ -271,6 +271,10 @@ export default {
       let params = this.condition;
       params.sellerId = this.sellerId;
       params.page = page;
+      if(!params.sellerId) {
+        this.$message.error({ message: "请先登陆账号！" });
+        return;
+      }
       // 请求
       let res = await this.$Http.getOrderList(params);
       // 响应
@@ -298,7 +302,7 @@ export default {
     this.getOrderList(1);
     this.$root.$on("getNewOrder", () => {
       this.notifyNew();
-      this.getOrderList(this.sellerId);
+      this.getOrderList(1);
     });
   },
   computed: {

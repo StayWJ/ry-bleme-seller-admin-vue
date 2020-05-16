@@ -62,6 +62,9 @@ export default {
   methods: {
     // 获取商品列表
     async getProductList() {
+      if (!this.sellerId) {
+        return;
+      }
       let res = await this.$Http.getCategoryProductList({
         sellerId: this.sellerId,
         categoryType: this.categoryType

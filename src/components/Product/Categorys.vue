@@ -203,6 +203,9 @@ export default {
 
     // 获取类目列表
     async getCategoryList() {
+      if (!this.sellerId) {
+        return;
+      }
       let res = await this.$Http.getCategoryList({
         sellerId: this.sellerId
       });
@@ -230,7 +233,7 @@ export default {
     },
     sellerId() {
       return this.$store.state.seller.sellerId;
-    },
+    }
   }
 };
 </script>

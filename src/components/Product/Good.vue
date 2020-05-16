@@ -1,6 +1,6 @@
 <template>
   <div id="good">
-    <el-dialog title="商品信息" :visible.sync="dialogFormVisible" width="70%" top="6vh">
+    <el-dialog title="商品信息" :visible="dialogFormVisible" @close="close" width="70%" top="6vh">
       <!-- 图片 -->
       <el-form :model="product" label-position="right" label-width="81px" size="medium">
         <el-row type="flex">

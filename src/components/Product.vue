@@ -60,6 +60,10 @@ export default {
     // 获取类目列表
     async getCategoryList() {
       if (this.categoryList.length == 0) {
+        if (!this.sellerId) {
+          this.$message.error({ message: "请先登陆账号！" });
+          return;
+        }
         let res = await this.$Http.getCategoryList({
           sellerId: this.sellerId
         });
@@ -84,7 +88,7 @@ export default {
     },
     sellerId() {
       return this.$store.state.seller.sellerId;
-    },
+    }
   }
 };
 </script>
